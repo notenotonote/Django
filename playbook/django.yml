@@ -1,0 +1,7 @@
+---
+- name: Djangoサーバの初期設定を行います
+  hosts:  django
+  user: vagrant
+  gather_facts: False
+  roles:
+    - django

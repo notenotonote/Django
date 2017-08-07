@@ -1,0 +1,8 @@
+[django]
+192.168.34.10
+
+[local:children]
+django
+
+[local:vars]
+ansible_connection=local

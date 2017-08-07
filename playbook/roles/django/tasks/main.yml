@@ -1,0 +1,43 @@
+---
+- name: yum install
+  become: yes
+  yum:
+    name: "{{ item }}"
+    state: latest
+  with_items: "{{ yum_packages }}"  # see group_vars/datamining.yml
+  tags: yum
+
+- name: git clone pyenv
+  git:
+    repo: "{{ item.repo }}"
+    dest: "{{ item.dest }}"
+  with_items: "{{ git }}" # see group_vars/datamining.yml
+  tags: git
+
+- name: check pyenv is installed
+  shell:  source ~/.bash_profile; which pyenv
+  ignore_errors: yes
+  register: pyenv_install
+  tags: check_pyenv
+
+- name: "install pyenv and python ver.{{ python_ver }}" # see group_vars/datamining.yml
+  shell: "{{ item.cmd }}"
+  with_items:
+    - cmd: echo 'export PYENV_ROOT="${HOME}/.pyenv"' >> ~/.bash_profile
+    - cmd: echo 'if [ -d "${PYENV_ROOT}" ]; then' >> ~/.bash_profile
+    - cmd: echo '    export PATH=${PYENV_ROOT}/bin:$PATH' >> ~/.bash_profile
+    - cmd: echo '    eval "$(pyenv init -)"' >> ~/.bash_profile
+    - cmd: echo 'fi' >> ~/.bash_profile
+    - cmd: source ~/.bash_profile; pyenv install '{{ python_ver }}'
+  when: pyenv_install.rc == 1
+  tags: install_pyenv
+
+- name  : pip install
+  pip:
+    name: "{{ item.name }}"
+    state:  present
+    version:  "{{ item.version }}"
+    executable: "~/.pyenv/versions/{{ python_ver }}/bin/pip"
+  with_items: "{{ pip_packages }}"  # see group_vars/datamining.yml
+  tags: pip
+

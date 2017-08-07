@@ -1,0 +1,26 @@
+---
+python_ver: 3.6.2
+
+yum_packages:
+  - gcc
+  - gcc-c++
+  - make
+  - git
+  - openssl-devel
+  - zlib-devel
+  - bzip2
+  - bzip2-devel
+  - readline-devel
+  - sqlite
+  - sqlite-devel
+  - unixODBC-devel
+
+git:
+  - repo: https://github.com/yyuu/pyenv.git
+    dest: ~/.pyenv
+
+pip_packages:
+  - name: django
+    version: 1.11.4
+
+message: "Daiki Ansible!"
