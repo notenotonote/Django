@@ -18,6 +18,8 @@ yum_packages:
 git:
   - repo: https://github.com/yyuu/pyenv.git
     dest: ~/.pyenv
+  - repo: https://github.com/vim/vim.git
+    dest: ~/git/github/vim
 
 pip_packages:
   - name: django

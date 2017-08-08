@@ -7,12 +7,42 @@
   with_items: "{{ yum_packages }}"  # see group_vars/datamining.yml
   tags: yum
 
-- name: git clone pyenv
+- name: make git directory
+  file:
+    path: ~/git
+    state:  directory
+    owner:  vagrant
+    group:  vagrant
+    mode: 0775
+  tags: git
+
+- name: make github directory
+  file:
+    path: ~/git/github
+    state:  directory
+    owner:  vagrant
+    group:  vagrant
+    mode: 0775
+  tags: git
+
+- name: git clone
   git:
     repo: "{{ item.repo }}"
     dest: "{{ item.dest }}"
   with_items: "{{ git }}" # see group_vars/datamining.yml
   tags: git
+
+- name: build vim
+  make:
+    chdir:  ~/git/github/vim/src
+  tags: vim
+
+- name: install vim
+  become: yes
+  make:
+    chdir:  /home/vagrant/git/github/vim/src
+    target: install
+  tags: vim
 
 - name: check pyenv is installed
   shell:  source ~/.bash_profile; which pyenv
