@@ -47,7 +47,7 @@
 - name: vimrc
   copy:
     src:  /vagrant/playbook/roles/django/files/vim/.vimrc
-    dest: ~/.vim
+    dest: ~/.vimrc
     owner:  vagrant
     group:  vagrant
     mode: 0644
