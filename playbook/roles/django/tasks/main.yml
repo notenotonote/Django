@@ -44,6 +44,16 @@
     target: install
   tags: vim
 
+- name: vimrc
+  copy:
+    src:  /vagrant/playbook/roles/django/files/vim/.vimrc
+    dest: ~/.vim
+    owner:  vagrant
+    group:  vagrant
+    mode: 0644
+    force:  yes
+  tags: vim
+
 - name: check pyenv is installed
   shell:  source ~/.bash_profile; which pyenv
   ignore_errors: yes
@@ -71,3 +81,12 @@
   with_items: "{{ pip_packages }}"  # see group_vars/datamining.yml
   tags: pip
 
+- name: copy git config
+  copy:
+    src:  /vagrant/playbook/roles/django/files/git/.gitconfig
+    dest: ~/.gitconfig
+    owner:  vagrant
+    group:  vagrant
+    mode: 0644
+    force:  yes
+  tags: gitconfig
