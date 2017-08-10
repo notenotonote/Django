@@ -32,22 +32,36 @@
   with_items: "{{ git }}" # see group_vars/datamining.yml
   tags: git
 
-- name: build vim
-  make:
-    chdir:  ~/git/github/vim/src
+- name: check vim
+  stat: path=/usr/local/share/vim
+  register: vim_bin
+  become: yes
   tags: vim
 
-- name: install vim
+- block:
+  - name: distclean vim
+    command:  chdir=/home/vagrant/git/github/vim/ make distclean
+
+  - name: configure vim
+    command:  chdir=/home/vagrant/git/github/vim/ ./configure --with-features=huge --enable-multibyte --enable-luainterp=dynamic --enable-gpm --enable-cscope --enable-fontset --enable-fail-if-missing --prefix=/usr/local
+
+  - name: build vim
+    make:
+      chdir:  /home/vagrant/git/github/vim/
+
+  - name: install vim
+    make:
+      chdir:  /home/vagrant/git/github/vim/
+      target: install
+
+  when: not vim_bin.stat.exists
   become: yes
-  make:
-    chdir:  /home/vagrant/git/github/vim/src
-    target: install
   tags: vim
 
 - name: vimrc
   copy:
     src:  /vagrant/playbook/roles/django/files/vim/.vimrc
-    dest: ~/.vimrc
+    dest: /home/vagrant/.vimrc
     owner:  vagrant
     group:  vagrant
     mode: 0644
